@@ -1,0 +1,28 @@
+{
+  "name": "transfi-hackathon",
+  "version": "1.0.0",
+  "description": "The hackathon project of Buildathon",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danishmeet/transfi-hackathon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/danishmeet/transfi-hackathon/issues"
+  },
+  "homepage": "https://github.com/danishmeet/transfi-hackathon#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.19"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7"
+  }
+}
