@@ -2,147 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Transfi | Sepolia Test</title>
-  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #f0f4f8;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-      width: 90%;
-      max-width: 400px;
-    }
-
-    h2 {
-      text-align: center;
-      color: #4f46e5;
-      margin-bottom: 20px;
-    }
-
-    input, select, button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-
-    button {
-      background-color: #4f46e5;
-      color: white;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #4338ca;
-    }
-
-    #status {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 14px;
-      color: #555;
-    }
-
-    #status.success {
-      color: green;
-    }
-
-    #status.error {
-      color: red;
-    }
-  </style>
+  <title>Transfi | Send ETH Worldwide</title>
 </head>
 <body>
+  <h1>🌍 Transfi - Send ETH</h1>
+  
+  <input id="receiver" placeholder="Receiver Address" />
+  <input id="amount" placeholder="Amount in ETH" />
+  <input id="currency" placeholder="Currency (e.g. USD)" />
+  <input id="message" placeholder="Message" />
+  <button onclick="sendPayment()">Send Payment</button>
 
-  <div class="container">
-    <h2>Transfi Sepolia Test</h2>
-
-    <input id="receiver" type="text" placeholder="Receiver Wallet Address" />
-    <input id="amount" type="number" placeholder="Amount" />
-    
-    <select id="currency">
-      <option value="USDC">USDC</option>
-      <option value="DAI">DAI</option>
-      <option value="USDT">USDT</option>
-    </select>
-
-    <button onclick="sendPayment()">Send Payment</button>
-
-    <div id="status"></div>
-  </div>
-
-  <script>
-    // Replace with your actual deployed contract address on Sepolia
-    const contractAddress = "0xYourContractAddressHere";
-
-    // Replace with your smart contract ABI (just the relevant part for calling the send function)
-    const contractABI = [
-      {
-        "inputs": [
-          { "internalType": "address", "name": "receiver", "type": "address" },
-          { "internalType": "uint256", "name": "amount", "type": "uint256" },
-          { "internalType": "string", "name": "currency", "type": "string" }
-        ],
-        "name": "sendPayment",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-      }
-    ];
-
-    async function sendPayment() {
-      const receiver = document.getElementById("receiver").value.trim();
-      const amount = document.getElementById("amount").value.trim();
-      const currency = document.getElementById("currency").value;
-      const statusDiv = document.getElementById("status");
-
-      statusDiv.className = '';
-      statusDiv.textContent = '';
-
-      if (!window.ethereum) {
-        statusDiv.textContent = "❌ MetaMask not detected.";
-        statusDiv.classList.add("error");
-        return;
-      }
-
-      try {
-        await ethereum.request({ method: 'eth_requestAccounts' });
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-        const tx = await contract.sendPayment(receiver, ethers.utils.parseEther(amount), currency, {
-          value: ethers.utils.parseEther("0.001") // Replace with appropriate value if needed
-        });
-
-        statusDiv.textContent = "⏳ Waiting for confirmation...";
-        await tx.wait();
-        statusDiv.textContent = `✅ Payment sent to ${receiver.slice(0, 6)}...`;
-        statusDiv.classList.add("success");
-      } catch (error) {
-        console.error(error);
-        statusDiv.textContent = "❌ Error sending payment.";
-        statusDiv.classList.add("error");
-      }
-    }
-  </script>
-
+  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
