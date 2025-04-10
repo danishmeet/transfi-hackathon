@@ -2,8 +2,6 @@
 pragma solidity ^0.8.18;
 
 contract Transfi {
-    address public owner;
-
     event Transfer(
         address indexed from,
         address indexed to,
@@ -12,9 +10,7 @@ contract Transfi {
         string message
     );
 
-    constructor() {
-        owner = msg.sender;
-    }
+    constructor() payable {}
 
     function sendPayment(
         address payable recipient,
@@ -22,10 +18,16 @@ contract Transfi {
         string memory message
     ) public payable {
         require(msg.value > 0, "Amount must be greater than 0");
+        require(recipient != address(0), "Invalid recipient address");
+
+        // Transfer ETH to the recipient
         recipient.transfer(msg.value);
+
+        // Emit event for off-chain logging
         emit Transfer(msg.sender, recipient, msg.value, fiatCurrency, message);
     }
 
+    // Optional: Get contract's ETH balance
     function getContractBalance() public view returns (uint256) {
         return address(this).balance;
     }

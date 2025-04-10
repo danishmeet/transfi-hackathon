@@ -1,19 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Transfi | Send ETH Worldwide</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .form-container {
+      background-color: #fff;
+      padding: 25px 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-  <h1>🌍 Transfi - Send ETH</h1>
-  
-  <input id="receiver" placeholder="Receiver Address" />
-  <input id="amount" placeholder="Amount in ETH" />
-  <input id="currency" placeholder="Currency (e.g. USD)" />
-  <input id="message" placeholder="Message" />
-  <button onclick="sendPayment()">Send Payment</button>
 
-  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+  <h1>🌍 Transfi - Send ETH</h1>
+
+  <div class="form-container">
+    <input id="receiver" placeholder="Receiver Address" />
+    <input id="amount" placeholder="Amount in ETH" />
+    <input id="currency" placeholder="Currency (e.g. USD)" />
+    <input id="message" placeholder="Message" />
+    <button onclick="sendPayment()">Send Payment</button>
+  </div>
+
+  <!-- ✅ Load Ethers.js -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

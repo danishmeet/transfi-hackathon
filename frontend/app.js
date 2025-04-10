@@ -1,4 +1,7 @@
-const contractAddress = "YOUR_CONTRACT_ADDRESS_HERE";
+// ✅ Your deployed Sepolia contract address
+const contractAddress = "0x2A4d17b7f31d92A11A825eA8dcE44E9E68d9f201";
+
+// ✅ ABI of the Transfi contract
 const abi = [
   {
     "inputs": [],
@@ -80,31 +83,43 @@ const abi = [
   }
 ];
 
+// ✅ Send payment via MetaMask
 async function sendPayment() {
   if (typeof window.ethereum === "undefined") {
     alert("Please install MetaMask!");
     return;
   }
 
-  await ethereum.request({ method: "eth_requestAccounts" });
+  try {
+    // ✅ Ask MetaMask to connect and return accounts
+    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
 
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
 
-  const contract = new ethers.Contract(contractAddress, abi, signer);
+    const sender = await signer.getAddress(); // ⬅️ Authenticated sender
+    console.log("🔐 Sender address:", sender);
 
-  const receiver = document.getElementById("receiver").value;
-  const amount = document.getElementById("amount").value;
-  const currency = document.getElementById("currency").value;
-  const message = document.getElementById("message").value;
+    const contract = new ethers.Contract(contractAddress, abi, signer);
 
-  const tx = await contract.sendPayment(
-    receiver,
-    currency,
-    message,
-    { value: ethers.utils.parseEther(amount) }
-  );
+    const receiver = document.getElementById("receiver").value;
+    console.log("📨 Receiver entered:", receiver);
+    const amount = document.getElementById("amount").value;
+    const currency = document.getElementById("currency").value;
+    const message = document.getElementById("message").value;
 
-  await tx.wait();
-  alert("✅ Transaction successful!");
+    const tx = await contract.sendPayment(
+      receiver,
+      currency,
+      message,
+      { value: ethers.utils.parseEther(amount) }
+    );
+
+    await tx.wait();
+
+    alert(`✅ Transaction sent from ${sender} to ${receiver}`);
+  } catch (error) {
+    console.error("❌ Transaction failed:", error);
+    alert("❌ Payment failed. Check the console for details.");
+  }
 }
