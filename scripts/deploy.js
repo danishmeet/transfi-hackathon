@@ -1,12 +1,11 @@
 const hre = require("hardhat");
 
 async function main() {
-  const Transfi = await hre.ethers.getContractFactory("Transfi");
-  const transfi = await Transfi.deploy(); // you can add { value: ... } here if needed
+  const Bridge = await hre.ethers.getContractFactory("TransfiBridge");
+  const bridge = await Bridge.deploy();
+  await bridge.waitForDeployment();
 
-  await transfi.waitForDeployment(); // ✅ correct for Ethers v6
-
-  console.log("✅ Transfi deployed to:", await transfi.getAddress());
+  console.log(`✅ TransfiBridge deployed at: ${bridge.target}`);
 }
 
 main().catch((error) => {

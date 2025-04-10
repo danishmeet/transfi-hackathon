@@ -2,71 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Transfi | Send ETH Worldwide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transfi - Cross-Border Stablecoin Transfer</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f172a;
+      color: white;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      padding: 40px;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #1e293b;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      width: 400px;
     }
 
     h1 {
-      color: #333;
-      margin-bottom: 30px;
+      text-align: center;
+      color: #38bdf8;
     }
 
-    .form-container {
-      background-color: #fff;
-      padding: 25px 40px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    input, button {
       width: 100%;
-      max-width: 400px;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
     }
 
     input {
-      width: 100%;
-      padding: 10px 15px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
+      background-color: #334155;
+      color: white;
     }
 
     button {
-      width: 100%;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 16px;
+      background-color: #38bdf8;
+      color: black;
       cursor: pointer;
-      margin-top: 10px;
+      font-weight: bold;
     }
 
-    button:hover {
-      background-color: #45a049;
+    #status {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.95rem;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Transfi Bridge 🌍</h1>
+    
+    <button id="connectButton">🔗 Connect Wallet</button>
 
-  <h1>🌍 Transfi - Send ETH</h1>
+    <input type="text" id="receiver" placeholder="Receiver Address" />
+    <input type="number" id="amount" placeholder="Amount in Stablecoin" />
+    
+    <button id="sendButton">🚀 Send Stablecoin</button>
 
-  <div class="form-container">
-    <input id="receiver" placeholder="Receiver Address" />
-    <input id="amount" placeholder="Amount in ETH" />
-    <input id="currency" placeholder="Currency (e.g. USD)" />
-    <input id="message" placeholder="Message" />
-    <button onclick="sendPayment()">Send Payment</button>
+    <p id="status">Connect wallet to get started.</p>
   </div>
 
-  <!-- ✅ Load Ethers.js -->
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

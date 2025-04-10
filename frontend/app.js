@@ -1,125 +1,102 @@
-// ✅ Your deployed Sepolia contract address
-const contractAddress = "0x2A4d17b7f31d92A11A825eA8dcE44E9E68d9f201";
+const contractAddress = "0x2A4d17b7f31d92A11A825eA8dcE44E9E68d9f201"; // Your deployed TransfiBridge contract
 
-// ✅ ABI of the Transfi contract
-const abi = [
-  {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "inputs": [],
-    "name": "getContractBalance",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "recipient",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "fiatCurrency",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "message",
-        "type": "string"
-      }
-    ],
-    "name": "sendPayment",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
+const contractABI = [
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "fiatCurrency",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "message",
-        "type": "string"
-      }
+      { "indexed": true, "internalType": "address", "name": "sender", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "receiver", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }
     ],
-    "name": "Transfer",
+    "name": "TransferInitiated",
     "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "tokenAddress", "type": "address" },
+      { "internalType": "address", "name": "to", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "transferStablecoin",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ];
 
-// ✅ Send payment via MetaMask
-async function sendPayment() {
-  if (typeof window.ethereum === "undefined") {
-    alert("Please install MetaMask!");
+let provider;
+let signer;
+let contract;
+
+document.getElementById("connectButton").onclick = async () => {
+  if (typeof window.ethereum !== "undefined") {
+    try {
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+      contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+      const address = await signer.getAddress();
+      document.getElementById("status").innerText = `✅ Wallet connected: ${address.slice(0, 6)}...${address.slice(-4)}`;
+    } catch (error) {
+      console.error("Connection error:", error);
+      document.getElementById("status").innerText = "❌ Wallet connection failed";
+    }
+  } else {
+    alert("🦊 Please install MetaMask");
+  }
+};
+
+document.getElementById("sendButton").onclick = async () => {
+  const receiver = document.getElementById("receiver").value.trim();
+  const amount = document.getElementById("amount").value.trim();
+
+  const usdcAddress = receiver; // Mock USDC token on Sepolia
+
+  const tokenABI = [
+    {
+      "inputs": [
+        { "internalType": "address", "name": "spender", "type": "address" },
+        { "internalType": "uint256", "name": "amount", "type": "uint256" }
+      ],
+      "name": "approve",
+      "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ];
+
+  if (!contract) {
+    alert("Please connect your wallet first!");
+    return;
+  }
+
+  if (!ethers.isAddress(receiver)) {
+    alert("❌ Invalid receiver address");
+    return;
+  }
+
+  if (isNaN(amount) || Number(amount) <= 0) {
+    alert("❌ Enter a valid amount");
     return;
   }
 
   try {
-    // ✅ Ask MetaMask to connect and return accounts
-    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+    const tokenContract = new ethers.Contract(usdcAddress, tokenABI, signer);
+    const approveTx = await tokenContract.approve(contractAddress, ethers.parseUnits(amount, 18));
+    await approveTx.wait();
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-
-    const sender = await signer.getAddress(); // ⬅️ Authenticated sender
-    console.log("🔐 Sender address:", sender);
-
-    const contract = new ethers.Contract(contractAddress, abi, signer);
-
-    const receiver = document.getElementById("receiver").value;
-    console.log("📨 Receiver entered:", receiver);
-    const amount = document.getElementById("amount").value;
-    const currency = document.getElementById("currency").value;
-    const message = document.getElementById("message").value;
-
-    const tx = await contract.sendPayment(
+    const tx = await contract.transferStablecoin(
+      usdcAddress,
       receiver,
-      currency,
-      message,
-      { value: ethers.utils.parseEther(amount) }
+      ethers.parseUnits(amount, 18)
     );
 
+    document.getElementById("status").innerText = "⏳ Transaction sent. Waiting for confirmation...";
     await tx.wait();
-
-    alert(`✅ Transaction sent from ${sender} to ${receiver}`);
-  } catch (error) {
-    console.error("❌ Transaction failed:", error);
-    alert("❌ Payment failed. Check the console for details.");
+    document.getElementById("status").innerText = "✅ Stablecoin transferred successfully!";
+  } catch (err) {
+    console.error(err);
+    document.getElementById("status").innerText = "❌ Error sending stablecoin";
   }
-}
+};
