@@ -64,8 +64,7 @@
     <button id="connectButton">🔗 Connect Wallet</button>
 
     <input type="text" id="receiver" placeholder="Receiver Address" />
-    <input type="number" id="amount" placeholder="Amount in Stablecoin" />
-    
+    <input type="number" step="any" id="amount" placeholder="Amount in Stablecoin" />
     <button id="sendButton">🚀 Send Stablecoin</button>
 
     <p id="status">Connect wallet to get started.</p>
@@ -73,5 +72,31 @@
 
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
   <script src="app.js"></script>
+    <!-- Arweave SDK -->
+  <script src="https://unpkg.com/arweave/bundles/web.bundle.min.js"></script>
+
+  <!-- Arweave Key Loader -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const keyInput = document.createElement("input");
+      keyInput.type = "file";
+      keyInput.accept = ".json";
+      keyInput.style.marginTop = "10px";
+      keyInput.onchange = (e) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            window.arweaveKey = JSON.parse(event.target.result);
+            alert("✅ Arweave key loaded successfully");
+          } catch {
+            alert("❌ Invalid Arweave key");
+          }
+        };
+        reader.readAsText(e.target.files[0]);
+      };
+      document.querySelector(".container").appendChild(keyInput);
+    });
+  </script>
+
 </body>
 </html>

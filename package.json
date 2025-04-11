@@ -7,6 +7,7 @@
     "test": "test"
   },
   "dependencies": {
+    "@irys/sdk": "^0.2.11",
     "abbrev": "^1.0.9",
     "acorn": "^8.14.1",
     "acorn-walk": "^8.3.4",
@@ -28,6 +29,7 @@
     "array-back": "^3.1.0",
     "array-union": "^2.1.0",
     "array-uniq": "^1.0.3",
+    "arweave": "^1.15.7",
     "asap": "^2.0.6",
     "assertion-error": "^1.1.0",
     "astral-regex": "^2.0.0",
@@ -363,7 +365,7 @@
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "hardhat": "^2.22.19",
     "mocha": "^10.8.2"
   },

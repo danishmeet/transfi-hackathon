@@ -94,6 +94,30 @@ document.getElementById("sendButton").onclick = async () => {
 
     document.getElementById("status").innerText = "⏳ Transaction sent. Waiting for confirmation...";
     await tx.wait();
+
+  const receipt = {
+    sender: await signer.getAddress(),
+    receiver,
+    amount,
+    timestamp: new Date().toISOString(),
+    txHash: tx.hash
+  };
+
+  if (window.arweaveKey) {
+    const arweave = Arweave.init({ host: "arweave.net", port: 443, protocol: "https" });
+    const transaction = await arweave.createTransaction({ data: JSON.stringify(receipt) }, window.arweaveKey);
+    transaction.addTag("App-Name", "Transfi");
+    transaction.addTag("Content-Type", "application/json");
+
+    await arweave.transactions.sign(transaction, window.arweaveKey);
+    await arweave.transactions.post(transaction);
+
+    const arweaveURL = `https://arweave.net/${transaction.id}`;
+    document.getElementById("status").innerHTML += `<br>🧾 Receipt: <a href="${arweaveURL}" target="_blank">${transaction.id.slice(0, 8)}...</a>`;
+  } else {
+    console.warn("Arweave key not loaded");
+  }
+
     document.getElementById("status").innerText = "✅ Stablecoin transferred successfully!";
   } catch (err) {
     console.error(err);
