@@ -1,0 +1,6 @@
+{
+    "name": "fraud-checker",
+    "type": "javascript",
+    "entry": "src/index.js"
+  }
+  

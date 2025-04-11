@@ -1,0 +1,11 @@
+{
+    "name": "fraud-checker",
+    "description": "An AO agent to detect high-value or suspicious transfers in Transfi",
+    "tags": ["transfi", "fraud", "ao"],
+    "authors": ["your-wallet-address-here"],
+    "language": "javascript",
+    "source": {
+      "entry": "src/index.js"
+    }
+  }
+  
